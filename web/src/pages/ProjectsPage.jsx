@@ -1,55 +1,50 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
+
+import useProjects from '../hooks/useProjects'
+
+const formatDate = (value) => {
+  if (!value) return 'Sin fecha'
+
+  if (value instanceof Date) {
+    return value.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
+
+  return value
+}
 
 const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
-  const [filterStatus, setFilterStatus] = useState('all') // all, active, completed
+  const [filterStatus, setFilterStatus] = useState('all')
+  const { projects, loading, error } = useProjects()
 
-  // Datos de ejemplo
-  const projects = [
-    {
-      id: '1',
-      name: 'Casa Ejemplo',
-      date: '2026-02-01',
-      images: 24,
-      scans: 2,
-      status: 'active',
-      storage: 'firebase'
-    },
-    {
-      id: '2',
-      name: 'Apartamento 402',
-      date: '2026-01-28',
-      images: 18,
-      scans: 1,
-      status: 'completed',
-      storage: 'local'
-    },
-    {
-      id: '3',
-      name: 'Oficina Central',
-      date: '2026-01-25',
-      images: 42,
-      scans: 3,
-      status: 'active',
-      storage: 'firebase'
-    },
-    {
-      id: '4',
-      name: 'Centro Comercial',
-      date: '2026-01-20',
-      images: 156,
-      scans: 8,
-      status: 'completed',
-      storage: 'firebase'
-    }
-  ]
+  const normalizedProjects = useMemo(
+    () =>
+      projects.map((project) => ({
+        ...project,
+        status: project.status?.toLowerCase?.() ?? 'active',
+        storage: project.storage ?? 'firebase',
+        dateLabel: formatDate(project.date),
+      })),
+    [projects]
+  )
 
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesFilter = filterStatus === 'all' || project.status === filterStatus
-    return matchesSearch && matchesFilter
-  })
+  const filteredProjects = useMemo(
+    () =>
+      normalizedProjects.filter((project) => {
+        const matchesSearch = project.name
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+        const matchesFilter =
+          filterStatus === 'all' || project.status === filterStatus
+        return matchesSearch && matchesFilter
+      }),
+    [normalizedProjects, searchTerm, filterStatus]
+  )
 
   return (
     <div className="projects-page" style={{ padding: '40px 20px', minHeight: 'calc(100vh - 140px)' }}>
@@ -63,13 +58,15 @@ const ProjectsPage = () => {
         </div>
 
         {/* Filters and Search */}
-        <div style={{ 
-          display: 'flex', 
-          gap: '20px', 
-          marginBottom: '30px',
-          flexWrap: 'wrap',
-          alignItems: 'center'
-        }}>
+        <div
+          style={{
+            display: 'flex',
+            gap: '20px',
+            marginBottom: '30px',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+          }}
+        >
           <input
             type="text"
             placeholder="🔍 Buscar proyectos..."
@@ -81,10 +78,10 @@ const ProjectsPage = () => {
               padding: '12px 20px',
               borderRadius: 'var(--border-radius)',
               border: '1px solid var(--bg-tertiary)',
-              fontSize: '1rem'
+              fontSize: '1rem',
             }}
           />
-          
+
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
@@ -93,7 +90,7 @@ const ProjectsPage = () => {
               borderRadius: 'var(--border-radius)',
               border: '1px solid var(--bg-tertiary)',
               fontSize: '1rem',
-              cursor: 'pointer'
+              cursor: 'pointer',
             }}
           >
             <option value="all">Todos</option>
@@ -107,7 +104,22 @@ const ProjectsPage = () => {
         </div>
 
         {/* Projects Grid */}
-        {filteredProjects.length > 0 ? (
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div className="spinner-large" />
+            <p style={{ marginTop: '16px', color: 'var(--text-secondary)' }}>
+              Cargando proyectos...
+            </p>
+          </div>
+        ) : error ? (
+          <div style={{ textAlign: 'center', padding: '60px 20px' }}>
+            <div style={{ fontSize: '4rem', marginBottom: '20px' }}>⚠️</div>
+            <h3 style={{ fontSize: '1.5rem', marginBottom: '10px' }}>
+              Error al cargar proyectos
+            </h3>
+            <p style={{ color: 'var(--text-secondary)' }}>{error.message}</p>
+          </div>
+        ) : filteredProjects.length > 0 ? (
           <div className="projects-grid">
             {filteredProjects.map((project) => (
               <div key={project.id} className="project-card">
@@ -117,29 +129,31 @@ const ProjectsPage = () => {
                 <div className="project-info">
                   <h3>{project.name}</h3>
                   <div className="project-meta">
-                    <span>📅 {project.date}</span>
+                    <span>📅 {project.dateLabel}</span>
                     <span className={`status-badge ${project.status}`}>
                       {project.status === 'active' ? 'En Proceso' : 'Completado'}
                     </span>
                   </div>
-                  <div style={{ 
-                    display: 'flex', 
-                    gap: '20px', 
-                    marginBottom: '15px',
-                    fontSize: '0.9rem',
-                    color: 'var(--text-secondary)'
-                  }}>
+                  <div
+                    style={{
+                      display: 'flex',
+                      gap: '20px',
+                      marginBottom: '15px',
+                      fontSize: '0.9rem',
+                      color: 'var(--text-secondary)',
+                    }}
+                  >
                     <span>📷 {project.images} fotos</span>
                     <span>📐 {project.scans} escaneos</span>
-                    <span>{project.storage === 'firebase' ? '☁️' : '📱'} {project.storage}</span>
+                    <span>
+                      {project.storage === 'firebase' ? '☁️' : '📱'} {project.storage}
+                    </span>
                   </div>
                   <div className="project-actions">
                     <Link to={`/viewer/${project.id}`} className="btn btn-secondary">
                       Ver
                     </Link>
-                    <button className="btn btn-primary">
-                      Exportar
-                    </button>
+                    <button className="btn btn-primary">Exportar</button>
                   </div>
                 </div>
               </div>
