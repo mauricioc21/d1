@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import useProjects from '../hooks/useProjects'
+import { useAuth } from '../contexts/AuthContext'
 
 const formatDate = (value) => {
   if (!value) return 'Sin fecha'
@@ -20,7 +21,11 @@ const formatDate = (value) => {
 const ProjectsPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
-  const { projects, loading, error } = useProjects()
+  const { user, loading: authLoading } = useAuth()
+  const { projects, loading, error } = useProjects({
+    userId: user?.uid ?? null,
+    enabled: !authLoading,
+  })
 
   const normalizedProjects = useMemo(
     () =>
@@ -104,7 +109,7 @@ const ProjectsPage = () => {
         </div>
 
         {/* Projects Grid */}
-        {loading ? (
+        {authLoading || loading ? (
           <div style={{ textAlign: 'center', padding: '60px 20px' }}>
             <div className="spinner-large" />
             <p style={{ marginTop: '16px', color: 'var(--text-secondary)' }}>

@@ -84,6 +84,7 @@
 .navbar-actions {
   display: flex;
   gap: 12px;
+  align-items: center;
 }
 
 .navbar-actions .btn {
@@ -92,6 +93,46 @@
   border: none;
   cursor: pointer;
   transition: all 0.3s;
+}
+
+.navbar-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 999px;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: var(--text-light);
+}
+
+.navbar-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  color: var(--bg-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.navbar-user-info {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.navbar-user-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.navbar-user-role {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* Mobile menu toggle */
@@ -116,6 +157,10 @@
   .navbar-actions .btn {
     padding: 6px 12px;
     font-size: 0.9rem;
+  }
+
+  .navbar-user {
+    display: none;
   }
   
   .logo-text {

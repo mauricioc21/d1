@@ -3,7 +3,7 @@
  */
 
 import { useEffect, useState } from 'react'
-import { collection, getDocs, orderBy, query } from 'firebase/firestore'
+import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 
 import { firestore } from '../services/firebase'
 import { firestoreCollections } from '@shared/config/firebase.config'
@@ -27,7 +27,8 @@ const mapProjectDocument = (doc) => {
   }
 }
 
-export const useProjects = () => {
+export const useProjects = (options = {}) => {
+  const { userId = null, enabled = true } = options
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
@@ -36,12 +37,25 @@ export const useProjects = () => {
     let isMounted = true
 
     const fetchProjects = async () => {
+      if (!enabled) {
+        setProjects([])
+        setLoading(false)
+        return
+      }
+
+      if (!userId) {
+        setProjects([])
+        setLoading(false)
+        return
+      }
+
       setLoading(true)
       setError(null)
 
       try {
         const projectsRef = collection(firestore, PROJECTS_COLLECTION)
-        const projectsQuery = query(projectsRef, orderBy('date', 'desc'))
+        const constraints = [where('userId', '==', userId), orderBy('date', 'desc')]
+        const projectsQuery = query(projectsRef, ...constraints)
         const snapshot = await getDocs(projectsQuery)
         const fetchedProjects = snapshot.docs.map(mapProjectDocument)
 
@@ -65,7 +79,7 @@ export const useProjects = () => {
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [userId, enabled])
 
   return { projects, loading, error }
 }
