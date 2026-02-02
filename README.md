@@ -2,6 +2,8 @@
 
 > Aplicación multiplataforma para escaneo 3D, captura 360° y generación de planos CAD/BIM
 
+> **🔥 Proyecto Firebase:** `Sutoderoapp` - [Ver guía de configuración](docs/SUTODEROAPP_CONFIG.md)
+
 ## 🌟 Características
 
 - 📱 **App Móvil** (iOS & Android) - React Native
@@ -60,6 +62,7 @@ npm run dev
 ## 🔥 Configuración de Firebase
 
 1. Crea un proyecto en [Firebase Console](https://console.firebase.google.com/)
+   - Proyecto: **Sutoderoapp** (o usa el proyecto existente)
 2. Activa:
    - Authentication (Email/Google)
    - Cloud Firestore

@@ -1,25 +1,26 @@
 /**
  * Configuración de Firebase para Su Todero D1
+ * Proyecto Firebase: Sutoderoapp
  * 
- * INSTRUCCIONES:
- * 1. Ve a https://console.firebase.google.com/
- * 2. Crea un nuevo proyecto o selecciona uno existente
- * 3. Ve a Configuración del proyecto > Tus aplicaciones
- * 4. Crea una app web y copia las credenciales aquí
- * 5. Activa los siguientes servicios:
- *    - Authentication (Email/Password y Google)
- *    - Cloud Firestore
- *    - Storage
+ * INSTRUCCIONES RÁPIDAS:
+ * 1. Ve a: https://console.firebase.google.com/project/sutoderoapp/settings/general
+ * 2. Baja hasta "Tus aplicaciones" > App Web
+ * 3. Copia las credenciales del objeto firebaseConfig
+ * 4. Reemplaza los valores a continuación con tus credenciales reales
+ * 
+ * GUÍA COMPLETA: Ver docs/SUTODEROAPP_CONFIG.md
  */
 
 export const firebaseConfig = {
-  // TODO: Reemplaza con tus credenciales de Firebase
+  // Configuración para el proyecto Sutoderoapp
+  // NOTA: Obtén las credenciales reales desde Firebase Console:
+  // https://console.firebase.google.com/project/sutoderoapp/settings/general
   apiKey: "TU_API_KEY_AQUI",
-  authDomain: "tu-proyecto.firebaseapp.com",
-  projectId: "tu-proyecto-id",
-  storageBucket: "tu-proyecto.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abc123def456",
+  authDomain: "sutoderoapp.firebaseapp.com",
+  projectId: "sutoderoapp",
+  storageBucket: "sutoderoapp.appspot.com",
+  messagingSenderId: "TU_MESSAGING_SENDER_ID",
+  appId: "TU_APP_ID_AQUI",
   measurementId: "G-XXXXXXXXXX"
 };
 

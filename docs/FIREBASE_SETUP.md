@@ -6,9 +6,9 @@
 
 1. Ve a https://console.firebase.google.com/
 2. Haz clic en "Agregar proyecto"
-3. Nombre del proyecto: `su-todero-d1` (o el que prefieras)
+3. Nombre del proyecto: `Sutoderoapp` (o usa el proyecto existente)
 4. Desactiva Google Analytics (opcional)
-5. Crea el proyecto
+5. Crea el proyecto o selecciona el proyecto existente "Sutoderoapp"
 
 ### 2. Configurar Aplicación Web
 
@@ -21,9 +21,9 @@
 ```javascript
 const firebaseConfig = {
   apiKey: "AIzaSy...",
-  authDomain: "su-todero-d1.firebaseapp.com",
-  projectId: "su-todero-d1",
-  storageBucket: "su-todero-d1.appspot.com",
+  authDomain: "sutoderoapp.firebaseapp.com",
+  projectId: "sutoderoapp",
+  storageBucket: "sutoderoapp.appspot.com",
   messagingSenderId: "123456789",
   appId: "1:123456789:web:abc..."
 };
