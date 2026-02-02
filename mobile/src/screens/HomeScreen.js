@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Dimensions,
 } from 'react-native';
+import colors from '../theme/colors';
 
 const { width } = Dimensions.get('window');
 
@@ -129,21 +130,21 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.whiteSoft,
   },
   header: {
     padding: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.black,
     marginBottom: 16,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#000000',
+    color: colors.primary,
   },
   subtitle: {
     fontSize: 16,
-    color: '#8E8E93',
+    color: colors.whiteSoft,
     marginTop: 4,
   },
   section: {
@@ -153,7 +154,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#000000',
+    color: colors.textDark,
     marginBottom: 12,
   },
   actionsGrid: {
@@ -163,16 +164,18 @@ const styles = StyleSheet.create({
   },
   actionCard: {
     width: (width - 48) / 2,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.white,
     borderRadius: 12,
     padding: 16,
     marginBottom: 12,
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: colors.primary,
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
+    borderWidth: 1,
+    borderColor: colors.borderGold,
   },
   actionIcon: {
     fontSize: 40,
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 8,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -252,7 +255,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: colors.primary,
     marginBottom: 4,
   },
   statLabel: {

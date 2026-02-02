@@ -1,7 +1,8 @@
 .footer {
-  background: var(--text-primary);
+  background: var(--bg-dark);
   color: white;
   padding: 60px 20px 20px;
+  border-top: 2px solid var(--primary-color);
 }
 
 .footer-container {
@@ -17,6 +18,8 @@
   font-size: 1.5rem;
   margin-bottom: 15px;
   color: var(--primary-color);
+  font-weight: 700;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
 }
 
 .footer-section h4 {

@@ -7,7 +7,11 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
-          <span className="logo-icon">📐</span>
+          <img 
+            src="/logo-sutodero-d1.png" 
+            alt="Su Todero D1" 
+            className="logo-image"
+          />
           <span className="logo-text">Su Todero D1</span>
         </Link>
         
