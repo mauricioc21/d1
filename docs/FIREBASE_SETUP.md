@@ -21,9 +21,9 @@
 ```javascript
 const firebaseConfig = {
   apiKey: "AIzaSy...",
-  authDomain: "sutoderoapp.firebaseapp.com",
-  projectId: "sutoderoapp",
-  storageBucket: "sutoderoapp.appspot.com",
+  authDomain: "d1sutodero.firebaseapp.com",
+  projectId: "d1sutodero",
+  storageBucket: "d1sutodero.appspot.com",
   messagingSenderId: "123456789",
   appId: "1:123456789:web:abc..."
 };

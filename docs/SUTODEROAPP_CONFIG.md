@@ -2,7 +2,7 @@
 
 ## ⚡ Acceso Rápido
 
-**Firebase Console:** https://console.firebase.google.com/project/sutoderoapp
+**Firebase Console:** https://console.firebase.google.com/project/d1sutodero
 
 ---
 
@@ -10,7 +10,7 @@
 
 ### 1. Acceder al Proyecto
 
-1. Ve a: https://console.firebase.google.com/project/sutoderoapp/settings/general
+1. Ve a: https://console.firebase.google.com/project/d1sutodero/settings/general
 2. Baja hasta la sección "Tus aplicaciones"
 
 ### 2. Configurar App Web
@@ -25,9 +25,9 @@ Si no tienes una app web registrada:
 ```javascript
 const firebaseConfig = {
   apiKey: "...",
-  authDomain: "sutoderoapp.firebaseapp.com",
-  projectId: "sutoderoapp",
-  storageBucket: "sutoderoapp.appspot.com",
+  authDomain: "d1sutodero.firebaseapp.com",
+  projectId: "d1sutodero",
+  storageBucket: "d1sutodero.appspot.com",
   messagingSenderId: "...",
   appId: "...",
   measurementId: "..."
@@ -57,19 +57,19 @@ const firebaseConfig = {
 ## ✅ Verificar Servicios Habilitados
 
 ### Authentication
-- URL: https://console.firebase.google.com/project/sutoderoapp/authentication
+- URL: https://console.firebase.google.com/project/d1sutodero/authentication
 - Métodos habilitados:
   - ✅ Correo electrónico/contraseña
   - ✅ Google
   - ✅ Apple (para iOS)
 
 ### Firestore Database
-- URL: https://console.firebase.google.com/project/sutoderoapp/firestore
+- URL: https://console.firebase.google.com/project/d1sutodero/firestore
 - Modo: Producción
 - Reglas de seguridad configuradas
 
 ### Storage
-- URL: https://console.firebase.google.com/project/sutoderoapp/storage
+- URL: https://console.firebase.google.com/project/d1sutodero/storage
 - Estructura de carpetas:
   ```
   /scans/
@@ -93,9 +93,9 @@ Copia esto en `shared/config/firebase.config.js`:
 
 export const firebaseConfig = {
   apiKey: "PEGA_AQUI_TU_API_KEY",
-  authDomain: "sutoderoapp.firebaseapp.com",
-  projectId: "sutoderoapp",
-  storageBucket: "sutoderoapp.appspot.com",
+  authDomain: "d1sutodero.firebaseapp.com",
+  projectId: "d1sutodero",
+  storageBucket: "d1sutodero.appspot.com",
   messagingSenderId: "PEGA_AQUI_TU_MESSAGING_SENDER_ID",
   appId: "PEGA_AQUI_TU_APP_ID",
   measurementId: "PEGA_AQUI_TU_MEASUREMENT_ID"
@@ -167,7 +167,7 @@ npm run ios
 
 ### Proyecto Firebase
 - **Nombre:** Sutoderoapp
-- **ID:** sutoderoapp
+- **ID:** d1sutodero
 - **Región:** (verifica en Firebase Console)
 
 ### Bundle IDs
@@ -175,11 +175,11 @@ npm run ios
 - **iOS:** `com.sutodero.d1`
 
 ### URLs de Administración
-- Dashboard: https://console.firebase.google.com/project/sutoderoapp
-- Authentication: https://console.firebase.google.com/project/sutoderoapp/authentication
-- Firestore: https://console.firebase.google.com/project/sutoderoapp/firestore
-- Storage: https://console.firebase.google.com/project/sutoderoapp/storage
-- Settings: https://console.firebase.google.com/project/sutoderoapp/settings/general
+- Dashboard: https://console.firebase.google.com/project/d1sutodero
+- Authentication: https://console.firebase.google.com/project/d1sutodero/authentication
+- Firestore: https://console.firebase.google.com/project/d1sutodero/firestore
+- Storage: https://console.firebase.google.com/project/d1sutodero/storage
+- Settings: https://console.firebase.google.com/project/d1sutodero/settings/general
 
 ---
 
@@ -202,7 +202,7 @@ mobile/ios/GoogleService-Info.plist
 ## 🆘 Problemas Comunes
 
 ### Error: "Firebase project not found"
-➡️ Verifica que el `projectId` sea exactamente: `sutoderoapp`
+➡️ Verifica que el `projectId` sea exactamente: `d1sutodero`
 
 ### Error: "Authentication failed"
 ➡️ Verifica que los métodos de autenticación estén habilitados en Firebase Console

@@ -12,13 +12,13 @@
  */
 
 export const firebaseConfig = {
-  // Configuración para el proyecto Sutoderoapp
+  // Configuración para el proyecto d1sutodero
   // NOTA: Obtén las credenciales reales desde Firebase Console:
-  // https://console.firebase.google.com/project/sutoderoapp/settings/general
+  // https://console.firebase.google.com/project/d1sutodero/settings/general
   apiKey: "TU_API_KEY_AQUI",
-  authDomain: "sutoderoapp.firebaseapp.com",
-  projectId: "sutoderoapp",
-  storageBucket: "sutoderoapp.appspot.com",
+  authDomain: "d1sutodero.firebaseapp.com",
+  projectId: "d1sutodero",
+  storageBucket: "d1sutodero.appspot.com",
   messagingSenderId: "TU_MESSAGING_SENDER_ID",
   appId: "TU_APP_ID_AQUI",
   measurementId: "G-XXXXXXXXXX"

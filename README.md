@@ -2,7 +2,7 @@
 
 > Aplicación multiplataforma para escaneo 3D, captura 360° y generación de planos CAD/BIM
 
-> **🔥 Proyecto Firebase:** `Sutoderoapp` - [Ver guía de configuración](docs/SUTODEROAPP_CONFIG.md)
+> **🔥 Proyecto Firebase:** `d1sutodero` - [Ver guía de configuración](docs/SUTODEROAPP_CONFIG.md)
 
 > **🎨 Diseño:** Negro, Blanco y Dorado - Elegante y Profesional - [Ver guía de marca](docs/BRAND_GUIDE.md)
 
