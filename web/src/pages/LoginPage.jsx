@@ -3,6 +3,24 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../contexts/AuthContext'
 
+export const AUTH_BRAND_HIGHLIGHTS = [
+  {
+    icon: '🌀',
+    title: 'Captura 360°',
+    description: 'Trabaja con cámaras 360° o desde tu smartphone para recorridos inmersivos.',
+  },
+  {
+    icon: '📐',
+    title: 'Planos precisos',
+    description: 'Genera planos 2D y modelos 3D listos para CAD/BIM con medidas fiables.',
+  },
+  {
+    icon: '☁️',
+    title: 'Sincronización total',
+    description: 'Gestión centralizada en la nube con acceso seguro desde web y app móvil.',
+  },
+]
+
 const LoginPage = () => {
   const navigate = useNavigate()
   const location = useLocation()
@@ -72,12 +90,38 @@ const LoginPage = () => {
 
   return (
     <div className="auth-page">
-      <div className="container" style={{ maxWidth: 480 }}>
-        <div className="card" style={{ padding: '32px 28px' }}>
-          <h1 style={{ marginBottom: 12, textAlign: 'center' }}>Bienvenido de nuevo</h1>
-          <p style={{ marginBottom: 24, textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Inicia sesión para gestionar tus proyectos y capturas 3D
-          </p>
+      <div className="auth-container">
+        <aside className="auth-panel auth-brand-panel">
+          <div className="auth-brand">
+            <img src="/logo-d1.png" alt="Logo Su Todero D1" className="auth-logo" />
+            <h1 className="auth-title">Su Todero D1</h1>
+            <p className="auth-tagline">
+              Escaneo 3D profesional y captura 360° sobre un lienzo oscuro elegante, sin fondos blancos
+              que distraigan la experiencia premium de la marca.
+            </p>
+
+            <ul className="auth-highlight-list">
+              {AUTH_BRAND_HIGHLIGHTS.map((item) => (
+                <li key={item.title} className="auth-highlight-item">
+                  <span className="auth-highlight-icon" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        <section className="auth-panel auth-form-panel">
+          <header className="auth-form-header">
+            <span className="auth-form-kicker">Acceso seguro</span>
+            <h2>Inicia sesión</h2>
+            <p>Gestiona capturas, recorridos virtuales e inventarios sin salir de la oficina.</p>
+          </header>
 
           <form onSubmit={handleSubmit} className="auth-form">
             <label className="auth-label">
@@ -117,11 +161,11 @@ const LoginPage = () => {
             )}
 
             <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
-              {isSubmitting ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {isSubmitting ? 'Iniciando sesión...' : 'Iniciar sesión'}
             </button>
           </form>
 
-          <div className="auth-links">
+          <div className="auth-links auth-links-left">
             <button
               type="button"
               className="link-button"
@@ -137,7 +181,7 @@ const LoginPage = () => {
               </Link>
             </span>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   )

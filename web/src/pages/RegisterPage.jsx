@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuth } from '../contexts/AuthContext'
+import { AUTH_BRAND_HIGHLIGHTS } from './LoginPage'
 
 const RegisterPage = () => {
   const navigate = useNavigate()
@@ -58,12 +59,38 @@ const RegisterPage = () => {
 
   return (
     <div className="auth-page">
-      <div className="container" style={{ maxWidth: 520 }}>
-        <div className="card" style={{ padding: '32px 28px' }}>
-          <h1 style={{ marginBottom: 12, textAlign: 'center' }}>Crea tu cuenta</h1>
-          <p style={{ marginBottom: 24, textAlign: 'center', color: 'var(--text-secondary)' }}>
-            Configura tu perfil para comenzar a capturar espacios y generar planos inteligentes
-          </p>
+      <div className="auth-container">
+        <aside className="auth-panel auth-brand-panel">
+          <div className="auth-brand">
+            <img src="/logo-d1.png" alt="Logo Su Todero D1" className="auth-logo" />
+            <h1 className="auth-title">Su Todero D1</h1>
+            <p className="auth-tagline">
+              Crea tu cuenta para comenzar a capturar espacios, generar recorridos virtuales y planificar
+              proyectos sin salir de tu oficina.
+            </p>
+
+            <ul className="auth-highlight-list">
+              {AUTH_BRAND_HIGHLIGHTS.map((item) => (
+                <li key={item.title} className="auth-highlight-item">
+                  <span className="auth-highlight-icon" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  <div>
+                    <h3>{item.title}</h3>
+                    <p>{item.description}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+
+        <section className="auth-panel auth-form-panel">
+          <header className="auth-form-header">
+            <span className="auth-form-kicker">Comienza ahora</span>
+            <h2>Crea tu cuenta</h2>
+            <p>Configura tu perfil para coordinar escaneos 3D y recorridos inmersivos al instante.</p>
+          </header>
 
           <form onSubmit={handleSubmit} className="auth-form">
             <label className="auth-label">
@@ -124,7 +151,7 @@ const RegisterPage = () => {
             </button>
           </form>
 
-          <div className="auth-links">
+          <div className="auth-links auth-links-left">
             <span>
               ¿Ya tienes una cuenta?{' '}
               <Link to="/login" className="link">
@@ -132,7 +159,7 @@ const RegisterPage = () => {
               </Link>
             </span>
           </div>
-        </div>
+        </section>
       </div>
     </div>
   )
