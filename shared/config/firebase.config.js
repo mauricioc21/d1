@@ -13,15 +13,14 @@
 
 export const firebaseConfig = {
   // Configuración para el proyecto d1sutodero
-  // NOTA: Obtén las credenciales reales desde Firebase Console:
-  // https://console.firebase.google.com/project/d1sutodero/settings/general
-  apiKey: "TU_API_KEY_AQUI",
+  // Credenciales completas desde Firebase Console
+  apiKey: "AIzaSyBRANDpxMj0z_MD0aX-lqwB6Xpqy9U8HnA",
   authDomain: "d1sutodero.firebaseapp.com",
   projectId: "d1sutodero",
-  storageBucket: "d1sutodero.appspot.com",
-  messagingSenderId: "TU_MESSAGING_SENDER_ID",
-  appId: "TU_APP_ID_AQUI",
-  measurementId: "G-XXXXXXXXXX"
+  storageBucket: "d1sutodero.firebasestorage.app",
+  messagingSenderId: "546754739782",
+  appId: "1:546754739782:web:786b8cc0e0b04fd2b69447",
+  measurementId: "G-GC2TRXBS03"
 };
 
 // Configuración de Storage
