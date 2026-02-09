@@ -2,7 +2,7 @@
  * SettingsScreen - Pantalla de configuración
  */
 
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   View,
   Text,
@@ -13,7 +13,11 @@ import {
   Alert,
 } from 'react-native';
 
+import { useAuth } from '../context/AuthContext';
+import colors from '../theme/colors';
+
 const SettingsScreen = () => {
+  const { user, logout } = useAuth();
   const [settings, setSettings] = useState({
     autoUpload: true,
     useWifiOnly: true,
@@ -21,6 +25,13 @@ const SettingsScreen = () => {
     highQuality: true,
     notifications: true,
   });
+
+  const displayInitials = useMemo(() => {
+    if (!user?.displayName) return '👤';
+    const nameParts = user.displayName.toUpperCase().split(' ');
+    const initials = nameParts.slice(0, 2).map((part) => part.charAt(0)).join('');
+    return initials || '👤';
+  }, [user]);
 
   const toggleSetting = (key) => {
     setSettings((prev) => ({ ...prev, [key]: !prev[key] }));
@@ -47,7 +58,13 @@ const SettingsScreen = () => {
       {
         text: 'Cerrar Sesión',
         style: 'destructive',
-        onPress: () => console.log('Cerrando sesión...'),
+        onPress: async () => {
+          try {
+            await logout();
+          } catch (error) {
+            console.error('Error al cerrar sesión', error);
+          }
+        },
       },
     ]);
   };
@@ -56,16 +73,15 @@ const SettingsScreen = () => {
     <ScrollView style={styles.container}>
       {/* Perfil */}
       <View style={styles.section}>
-        <TouchableOpacity style={styles.profileCard}>
+        <View style={styles.profileCard}>
           <View style={styles.avatarContainer}>
-            <Text style={styles.avatarText}>👤</Text>
+            <Text style={styles.avatarText}>{displayInitials}</Text>
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>Usuario Demo</Text>
-            <Text style={styles.profileEmail}>usuario@ejemplo.com</Text>
+            <Text style={styles.profileName}>{user?.displayName || 'Usuario Su Todero'}</Text>
+            <Text style={styles.profileEmail}>{user?.email}</Text>
           </View>
-          <Text style={styles.chevron}>›</Text>
-        </TouchableOpacity>
+        </View>
       </View>
 
       {/* Almacenamiento */}
@@ -82,8 +98,8 @@ const SettingsScreen = () => {
           <Switch
             value={settings.autoUpload}
             onValueChange={() => toggleSetting('autoUpload')}
-            trackColor={{ false: '#D1D1D6', true: '#34C759' }}
-            thumbColor="#FFFFFF"
+            trackColor={{ false: colors.blackLight, true: 'rgba(247, 199, 74, 0.65)' }}
+            thumbColor={colors.white}
           />
         </View>
 
@@ -97,8 +113,8 @@ const SettingsScreen = () => {
           <Switch
             value={settings.useWifiOnly}
             onValueChange={() => toggleSetting('useWifiOnly')}
-            trackColor={{ false: '#D1D1D6', true: '#34C759' }}
-            thumbColor="#FFFFFF"
+            trackColor={{ false: colors.blackLight, true: 'rgba(247, 199, 74, 0.65)' }}
+            thumbColor={colors.white}
           />
         </View>
 
@@ -112,8 +128,8 @@ const SettingsScreen = () => {
           <Switch
             value={settings.saveLocal}
             onValueChange={() => toggleSetting('saveLocal')}
-            trackColor={{ false: '#D1D1D6', true: '#34C759' }}
-            thumbColor="#FFFFFF"
+            trackColor={{ false: colors.blackLight, true: 'rgba(247, 199, 74, 0.65)' }}
+            thumbColor={colors.white}
           />
         </View>
 
@@ -137,8 +153,8 @@ const SettingsScreen = () => {
           <Switch
             value={settings.highQuality}
             onValueChange={() => toggleSetting('highQuality')}
-            trackColor={{ false: '#D1D1D6', true: '#34C759' }}
-            thumbColor="#FFFFFF"
+            trackColor={{ false: colors.blackLight, true: 'rgba(247, 199, 74, 0.65)' }}
+            thumbColor={colors.white}
           />
         </View>
 
@@ -187,8 +203,8 @@ const SettingsScreen = () => {
           <Switch
             value={settings.notifications}
             onValueChange={() => toggleSetting('notifications')}
-            trackColor={{ false: '#D1D1D6', true: '#34C759' }}
-            thumbColor="#FFFFFF"
+            trackColor={{ false: colors.blackLight, true: 'rgba(247, 199, 74, 0.65)' }}
+            thumbColor={colors.white}
           />
         </View>
       </View>
@@ -238,7 +254,7 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: colors.black,
   },
   section: {
     marginBottom: 24,
@@ -246,7 +262,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#8E8E93',
+    color: 'rgba(247, 199, 74, 0.65)',
     textTransform: 'uppercase',
     paddingHorizontal: 16,
     paddingVertical: 8,
@@ -255,27 +271,33 @@ const styles = StyleSheet.create({
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.blackSoft,
     padding: 16,
     marginHorizontal: 16,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.borderGold,
+    shadowColor: colors.shadowGold,
+    shadowOpacity: 0.35,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 12 },
+    elevation: 6,
   },
   avatarContainer: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    backgroundColor: '#007AFF',
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
+    borderWidth: 1,
+    borderColor: colors.borderGold,
   },
   avatarText: {
-    fontSize: 32,
+    fontSize: 22,
+    fontWeight: '700',
+    color: colors.black,
   },
   profileInfo: {
     flex: 1,
@@ -283,26 +305,28 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#000000',
+    color: colors.textLight,
     marginBottom: 4,
   },
   profileEmail: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: 'rgba(255,255,255,0.55)',
   },
   chevron: {
     fontSize: 24,
-    color: '#C7C7CC',
+    color: colors.textGold,
   },
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.blackSoft,
     padding: 16,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#C7C7CC',
+    borderBottomWidth: 1,
+    borderBottomColor: colors.borderGold,
     marginHorizontal: 16,
+    borderRadius: 14,
+    marginBottom: 12,
   },
   settingInfo: {
     flex: 1,
@@ -310,40 +334,47 @@ const styles = StyleSheet.create({
   },
   settingLabel: {
     fontSize: 16,
-    fontWeight: '500',
-    color: '#000000',
+    fontWeight: '600',
+    color: colors.textLight,
     marginBottom: 4,
   },
   settingDescription: {
     fontSize: 13,
-    color: '#8E8E93',
+    color: 'rgba(255,255,255,0.6)',
   },
   linkButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.blackSoft,
     padding: 16,
-    borderBottomWidth: 0.5,
-    borderBottomColor: '#C7C7CC',
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.borderGold,
     marginHorizontal: 16,
+    marginBottom: 12,
   },
   linkButtonText: {
     fontSize: 16,
-    color: '#000000',
+    color: colors.textLight,
+    fontWeight: '600',
   },
   linkButtonValue: {
     fontSize: 14,
-    color: '#8E8E93',
+    color: colors.textGold,
+    fontWeight: '600',
   },
   dangerButton: {
     borderBottomWidth: 0,
-    borderRadius: 12,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(220, 53, 69, 0.4)',
   },
   dangerButtonText: {
     fontSize: 16,
     color: '#FF3B30',
-    fontWeight: '600',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   footer: {
     alignItems: 'center',
@@ -352,7 +383,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 12,
-    color: '#C7C7CC',
+    color: '#8E8E93',
     marginBottom: 4,
   },
 });

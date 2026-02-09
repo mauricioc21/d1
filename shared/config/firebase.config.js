@@ -14,7 +14,7 @@
 export const firebaseConfig = {
   // Configuración para el proyecto d1sutodero
   // Credenciales completas desde Firebase Console
-  apiKey: "AIzaSyBRANDpxMj0z_MD0aX-lqwB6Xpqy9U8HnA",
+  apiKey: "AIzaSyBRANDpxMj0z_MD0aX-lqwB6Xpqy9U8HhA",
   authDomain: "d1sutodero.firebaseapp.com",
   projectId: "d1sutodero",
   storageBucket: "d1sutodero.firebasestorage.app",
@@ -47,6 +47,7 @@ export const storageConfig = {
 export const firestoreCollections = {
   users: 'users',
   projects: 'projects',
+  captures: 'captures',
   scans: 'scans',
   photos: 'photos',
   plans: 'plans'

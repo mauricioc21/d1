@@ -26,7 +26,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
           <img
-            src="/logo-sutodero-d1.png"
+            src="/logo-d1.png"
             alt="Su Todero D1"
             className="logo-image"
           />
@@ -61,7 +61,7 @@ const Navbar = () => {
             </>
           ) : (
             <>
-              <button className="btn btn-secondary" onClick={handleLogin} disabled={loading}>
+              <button className="btn btn-primary" onClick={handleLogin} disabled={loading}>
                 Iniciar sesión
               </button>
               <button className="btn btn-primary" onClick={handleRegister}>

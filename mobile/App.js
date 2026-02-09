@@ -4,116 +4,140 @@
 
 import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   SafeAreaView,
   StatusBar,
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
 } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-// Importar pantallas (las crearemos después)
 import HomeScreen from './src/screens/HomeScreen';
 import CameraScreen from './src/screens/CameraScreen';
 import ProjectsScreen from './src/screens/ProjectsScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import RegisterScreen from './src/screens/RegisterScreen';
 
-// Firebase
+import { AuthProvider, useAuth } from './src/context/AuthContext';
 import { initializeFirebase } from './src/services/firebase.service';
+import colors from './src/theme/colors';
 
 const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const LoadingView = ({ message = 'Iniciando Su Todero D1...' }) => (
+  <View style={styles.loadingContainer}>
+    <ActivityIndicator size="large" color={colors.primary} />
+    <Text style={styles.loadingText}>{message}</Text>
+  </View>
+);
+
+const AppTabs = () => (
+  <SafeAreaView style={styles.container}>
+    <Tab.Navigator
+      screenOptions={{
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: 'rgba(255,255,255,0.4)',
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: colors.black,
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          color: colors.textLight,
+        },
+        tabBarStyle: {
+          backgroundColor: colors.black,
+          borderTopColor: colors.borderGold,
+        },
+        tabBarLabelStyle: {
+          fontWeight: '600',
+        },
+      }}
+    >
+      <Tab.Screen
+        name="Inicio"
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24, color }}>🏠</Text>,
+        }}
+      />
+      <Tab.Screen
+        name="Cámara"
+        component={CameraScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24, color }}>📷</Text>,
+        }}
+      />
+      <Tab.Screen
+        name="Proyectos"
+        component={ProjectsScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24, color }}>📁</Text>,
+        }}
+      />
+      <Tab.Screen
+        name="Ajustes"
+        component={SettingsScreen}
+        options={{
+          tabBarIcon: ({ color }) => <Text style={{ fontSize: 24, color }}>⚙️</Text>,
+        }}
+      />
+    </Tab.Navigator>
+  </SafeAreaView>
+);
+
+const AuthStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="Login" component={LoginScreen} />
+    <Stack.Screen name="Register" component={RegisterScreen} />
+  </Stack.Navigator>
+);
+
+const RootNavigator = () => {
+  const { user, initializing } = useAuth();
+
+  if (initializing) {
+    return <LoadingView message="Sincronizando tu sesión..." />;
+  }
+
+  return user ? <AppTabs /> : <AuthStack />;
+};
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [firebaseReady, setFirebaseReady] = useState(false);
+  const [bootstrapping, setBootstrapping] = useState(true);
 
   useEffect(() => {
-    const initialize = async () => {
+    const bootstrap = async () => {
       try {
-        // Inicializar Firebase
         await initializeFirebase();
-        setFirebaseReady(true);
       } catch (error) {
         console.error('Error inicializando Firebase:', error);
-        // Continuar sin Firebase (modo offline)
-        setFirebaseReady(false);
       } finally {
-        setIsLoading(false);
+        setBootstrapping(false);
       }
     };
 
-    initialize();
+    bootstrap();
   }, []);
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Iniciando Su Todero D1...</Text>
-      </View>
-    );
+  if (bootstrapping) {
+    return <LoadingView />;
   }
 
   return (
     <GestureHandlerRootView style={styles.container}>
-      <NavigationContainer>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={styles.container}>
-          <Tab.Navigator
-            screenOptions={{
-              tabBarActiveTintColor: '#007AFF',
-              tabBarInactiveTintColor: '#8E8E93',
-              headerShown: true,
-              headerStyle: {
-                backgroundColor: '#F2F2F7',
-              },
-              headerTitleStyle: {
-                fontWeight: 'bold',
-              },
-            }}>
-            <Tab.Screen
-              name="Inicio"
-              component={HomeScreen}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Text style={{ fontSize: 24, color }}>🏠</Text>
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Cámara"
-              component={CameraScreen}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Text style={{ fontSize: 24, color }}>📷</Text>
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="Proyectos"
-              component={ProjectsScreen}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Text style={{ fontSize: 24, color }}>📁</Text>
-                ),
-                tabBarBadge: 3,
-              }}
-            />
-            <Tab.Screen
-              name="Ajustes"
-              component={SettingsScreen}
-              options={{
-                tabBarIcon: ({ color }) => (
-                  <Text style={{ fontSize: 24, color }}>⚙️</Text>
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </SafeAreaView>
-      </NavigationContainer>
+      <AuthProvider>
+        <NavigationContainer>
+          <StatusBar barStyle="light-content" />
+          <RootNavigator />
+        </NavigationContainer>
+      </AuthProvider>
     </GestureHandlerRootView>
   );
 }
@@ -121,18 +145,20 @@ function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.black,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.black,
+    padding: 24,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#8E8E93',
+    color: colors.textLight,
+    textAlign: 'center',
   },
 });
 

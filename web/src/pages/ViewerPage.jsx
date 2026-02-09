@@ -1,159 +1,297 @@
-import React, { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Link, useParams } from 'react-router-dom'
+import { Pannellum } from 'pannellum-react'
+
+import { getProjectById, listenCapturesByProject } from '../services/data'
+import { CaptureType } from '@shared/data/constants'
+
+const CAPTURE_LABELS = {
+  [CaptureType.PHOTO]: 'Foto',
+  [CaptureType.PHOTO_360]: '360°',
+  [CaptureType.SCAN_3D]: 'Escaneo 3D',
+  [CaptureType.VIDEO]: 'Video',
+}
+
+const formatDate = (value) => {
+  if (!value) return 'Sin fecha'
+  const date = value instanceof Date ? value : new Date(value)
+  return date.toLocaleDateString('es-CO', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+  })
+}
 
 const ViewerPage = () => {
   const { id } = useParams()
-  const [viewMode, setViewMode] = useState('3d') // 3d, 360, plan
+  const [viewMode, setViewMode] = useState('360')
+  const [project, setProject] = useState(null)
+  const [projectLoading, setProjectLoading] = useState(true)
+  const [projectError, setProjectError] = useState(null)
+  const [captures, setCaptures] = useState([])
+  const [capturesLoading, setCapturesLoading] = useState(true)
+  const [capturesError, setCapturesError] = useState(null)
+  const [selectedCaptureId, setSelectedCaptureId] = useState(null)
 
-  // Datos de ejemplo del proyecto
-  const project = {
-    id: id,
-    name: 'Casa Ejemplo',
-    date: '2026-02-01',
-    images: 24,
-    scans: 2
-  }
+  useEffect(() => {
+    let isMounted = true
+    setProjectLoading(true)
+    setProjectError(null)
+
+    getProjectById(id)
+      .then((data) => {
+        if (!isMounted) return
+        setProject(data)
+      })
+      .catch((error) => {
+        if (!isMounted) return
+        setProjectError(error)
+      })
+      .finally(() => {
+        if (!isMounted) return
+        setProjectLoading(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [id])
+
+  useEffect(() => {
+    setCapturesLoading(true)
+    setCapturesError(null)
+
+    const unsubscribe = listenCapturesByProject(
+      id,
+      (data) => {
+        setCaptures(data)
+        setCapturesLoading(false)
+      },
+      {
+        onError: (error) => {
+          setCapturesError(error)
+          setCapturesLoading(false)
+        },
+      }
+    )
+
+    return () => {
+      if (typeof unsubscribe === 'function') {
+        unsubscribe()
+      }
+    }
+  }, [id])
+
+  const captureSummary = useMemo(() => {
+    return captures.reduce(
+      (acc, capture) => {
+        acc[capture.type] = (acc[capture.type] || 0) + 1
+        return acc
+      },
+      {
+        [CaptureType.PHOTO]: 0,
+        [CaptureType.PHOTO_360]: 0,
+        [CaptureType.SCAN_3D]: 0,
+        [CaptureType.VIDEO]: 0,
+      }
+    )
+  }, [captures])
+
+  const preferredCapture = useMemo(() => {
+    if (!captures.length) return null
+    if (viewMode === '360') {
+      return (
+        captures.find((capture) => capture.type === CaptureType.PHOTO_360) ||
+        captures.find((capture) => capture.type === CaptureType.PHOTO)
+      )
+    }
+    if (viewMode === '3d') {
+      return captures.find((capture) => capture.type === CaptureType.SCAN_3D)
+    }
+    return captures.find((capture) => capture.type === CaptureType.PHOTO) || captures[0]
+  }, [captures, viewMode])
+
+  useEffect(() => {
+    if (!captures.length) {
+      setSelectedCaptureId(null)
+      return
+    }
+
+    const current = captures.find((capture) => capture.id === selectedCaptureId)
+    if (current) return
+
+    const fallback = preferredCapture || captures[0]
+    setSelectedCaptureId(fallback?.id || null)
+  }, [captures, preferredCapture, selectedCaptureId])
+
+  const selectedCapture = useMemo(() => {
+    return captures.find((capture) => capture.id === selectedCaptureId) || null
+  }, [captures, selectedCaptureId])
+
+  const headerSubtitle = project
+    ? `${formatDate(project.createdAt)} • ${project.metrics?.totalCaptures || 0} fotos • ${
+        project.metrics?.totalScans || 0
+      } escaneos • ${project.metrics?.total360 || 0} 360°`
+    : ''
 
   return (
-    <div className="viewer-page" style={{ height: 'calc(100vh - 70px)' }}>
-      {/* Header Info */}
-      <div style={{ 
-        background: 'var(--bg-primary)', 
-        padding: '15px 20px',
-        borderBottom: '1px solid var(--bg-tertiary)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-          <Link to="/projects" style={{ 
-            textDecoration: 'none', 
-            fontSize: '1.2rem',
-            color: 'var(--primary-color)'
-          }}>
+    <div className="viewer-page" style={{ minHeight: 'calc(100vh - 70px)' }}>
+      <div className="viewer-header">
+        <div className="viewer-header-left">
+          <Link to="/projects" className="viewer-back">
             ← Volver
           </Link>
           <div>
-            <h2 style={{ fontSize: '1.3rem', marginBottom: '4px' }}>{project.name}</h2>
-            <p style={{ fontSize: '0.9rem', color: 'var(--text-tertiary)' }}>
-              {project.date} • {project.images} imágenes • {project.scans} escaneos
-            </p>
+            <h2>{project?.name || 'Proyecto'}</h2>
+            {projectLoading ? (
+              <p className="viewer-subtitle">Cargando proyecto...</p>
+            ) : projectError ? (
+              <p className="viewer-subtitle viewer-error">No pudimos cargar el proyecto.</p>
+            ) : (
+              <p className="viewer-subtitle">{headerSubtitle}</p>
+            )}
           </div>
         </div>
 
-        {/* View Mode Selector */}
-        <div style={{ display: 'flex', gap: '10px' }}>
+        <div className="viewer-mode">
           <button
             onClick={() => setViewMode('3d')}
             className={`btn ${viewMode === '3d' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ padding: '8px 16px' }}
           >
             📐 Vista 3D
           </button>
           <button
             onClick={() => setViewMode('360')}
             className={`btn ${viewMode === '360' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ padding: '8px 16px' }}
           >
             🌐 Vista 360°
           </button>
           <button
             onClick={() => setViewMode('plan')}
             className={`btn ${viewMode === 'plan' ? 'btn-primary' : 'btn-secondary'}`}
-            style={{ padding: '8px 16px' }}
           >
             🗺️ Plano
           </button>
         </div>
 
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <button className="btn btn-secondary">
-            📥 Descargar
-          </button>
-          <button className="btn btn-primary">
-            📤 Exportar
-          </button>
+        <div className="viewer-actions">
+          <button className="btn btn-secondary">📥 Descargar</button>
+          <button className="btn btn-primary">📤 Exportar</button>
         </div>
       </div>
 
-      {/* Viewer Container */}
-      <div className="viewer-container">
-        {viewMode === '3d' && (
-          <div style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #1e3c72 0%, #2a5298 100%)'
-          }}>
-            <div style={{ fontSize: '5rem', marginBottom: '20px' }}>🏗️</div>
-            <h3 style={{ color: 'white', fontSize: '1.5rem', marginBottom: '10px' }}>
-              Visor 3D
-            </h3>
-            <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '20px' }}>
-              Visualización interactiva del modelo 3D (Requiere Three.js)
-            </p>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
-              Características: Rotación, Zoom, Mediciones, Anotaciones
+      <div className="viewer-body">
+        <aside className="viewer-sidebar">
+          <div className="viewer-sidebar-header">
+            <h3>Capturas</h3>
+            <span>{captures.length}</span>
+          </div>
+
+          <div className="viewer-summary">
+            <div>
+              <strong>{captureSummary[CaptureType.PHOTO_360] || 0}</strong>
+              <span>360°</span>
+            </div>
+            <div>
+              <strong>{captureSummary[CaptureType.PHOTO] || 0}</strong>
+              <span>Fotos</span>
+            </div>
+            <div>
+              <strong>{captureSummary[CaptureType.SCAN_3D] || 0}</strong>
+              <span>3D</span>
             </div>
           </div>
-        )}
 
-        {viewMode === '360' && (
-          <div style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)'
-          }}>
-            <div style={{ fontSize: '5rem', marginBottom: '20px' }}>🌐</div>
-            <h3 style={{ color: 'white', fontSize: '1.5rem', marginBottom: '10px' }}>
-              Visor 360°
-            </h3>
-            <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '20px' }}>
-              Recorrido virtual inmersivo (Requiere Pannellum)
-            </p>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
-              Navega arrastrando o con el mouse • Usa WASD para moverte
+          {capturesLoading ? (
+            <p className="viewer-muted">Cargando capturas...</p>
+          ) : capturesError ? (
+            <div className="viewer-error-block">
+              <p>No pudimos cargar las capturas.</p>
+              <span>{capturesError.message}</span>
             </div>
-          </div>
-        )}
+          ) : captures.length === 0 ? (
+            <p className="viewer-muted">Aún no hay capturas para este proyecto.</p>
+          ) : (
+            <div className="viewer-capture-list">
+              {captures.map((capture) => {
+                const isActive = capture.id === selectedCaptureId
+                const thumb = capture.thumbnailURL || capture.downloadURL
 
-        {viewMode === 'plan' && (
-          <div style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-          }}>
-            <div style={{ fontSize: '5rem', marginBottom: '20px' }}>🗺️</div>
-            <h3 style={{ color: 'white', fontSize: '1.5rem', marginBottom: '10px' }}>
-              Vista de Plano
-            </h3>
-            <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '20px' }}>
-              Planos 2D generados automáticamente
-            </p>
-            <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>
-              Exporta a: DWG, DXF, PDF, PNG
+                return (
+                  <button
+                    key={capture.id}
+                    className={`viewer-capture-card${isActive ? ' active' : ''}`}
+                    onClick={() => setSelectedCaptureId(capture.id)}
+                    type="button"
+                  >
+                    <div className="viewer-capture-thumb">
+                      {thumb ? <img src={thumb} alt={capture.fileName || 'capture'} /> : <span>📷</span>}
+                    </div>
+                    <div>
+                      <h4>{capture.fileName || 'Captura'}</h4>
+                      <p>{CAPTURE_LABELS[capture.type] || 'Archivo'}</p>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
-          </div>
-        )}
+          )}
+        </aside>
 
-        {/* Viewer Controls */}
-        <div className="viewer-controls">
-          <button title="Zoom In">🔍+</button>
-          <button title="Zoom Out">🔍-</button>
-          <button title="Reset View">🔄</button>
-          <button title="Fullscreen">⛶</button>
-          <button title="Settings">⚙️</button>
+        <div className="viewer-stage">
+          {viewMode === '360' && (
+            <div className="viewer-frame">
+              {selectedCapture?.downloadURL ? (
+                <Pannellum
+                  width="100%"
+                  height="100%"
+                  image={selectedCapture.downloadURL}
+                  pitch={10}
+                  yaw={180}
+                  hfov={110}
+                  autoLoad
+                  showZoomCtrl
+                  showFullscreenCtrl
+                />
+              ) : (
+                <div className="viewer-placeholder">
+                  <div style={{ fontSize: '4rem', marginBottom: '12px' }}>🌐</div>
+                  <h3>Visor 360°</h3>
+                  <p>
+                    Sube al menos una imagen 360° para iniciar el recorrido inmersivo del proyecto.
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {viewMode === '3d' && (
+            <div className="viewer-placeholder viewer-placeholder-blue">
+              <div style={{ fontSize: '4rem', marginBottom: '12px' }}>🏗️</div>
+              <h3>Visor 3D</h3>
+              <p>Visualización interactiva del modelo 3D (Requiere Three.js/Potree).</p>
+              {captureSummary[CaptureType.SCAN_3D] === 0 && (
+                <span>Sube escaneos 3D para habilitar esta vista.</span>
+              )}
+            </div>
+          )}
+
+          {viewMode === 'plan' && (
+            <div className="viewer-placeholder viewer-placeholder-purple">
+              <div style={{ fontSize: '4rem', marginBottom: '12px' }}>🗺️</div>
+              <h3>Vista de Plano</h3>
+              <p>Planos 2D generados automáticamente a partir de tus capturas.</p>
+              <span>Formatos: DWG, DXF, PDF, PNG.</span>
+            </div>
+          )}
+
+          <div className="viewer-controls">
+            <button title="Zoom In">🔍+</button>
+            <button title="Zoom Out">🔍-</button>
+            <button title="Reset View">🔄</button>
+            <button title="Fullscreen">⛶</button>
+            <button title="Settings">⚙️</button>
+          </div>
         </div>
       </div>
     </div>

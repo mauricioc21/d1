@@ -1,18 +1,11 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import {
-  createUserWithEmailAndPassword,
-  onAuthStateChanged,
-  sendPasswordResetEmail,
-  signInWithEmailAndPassword,
-  signOut,
-  updateProfile,
-} from 'firebase/auth'
-import { doc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
+import firebase from 'firebase/compat/app'
 
 import { auth, firestore } from '../services/firebase'
 import { firestoreCollections } from '@shared/config/firebase.config'
 
 const USERS_COLLECTION = firestoreCollections?.users || 'users'
+const serverTimestamp = () => firebase.firestore.FieldValue.serverTimestamp()
 
 const AuthContext = createContext({})
 
@@ -21,23 +14,24 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = auth.onAuthStateChanged(async (firebaseUser) => {
       setUser(firebaseUser)
       setLoading(false)
 
       if (firebaseUser) {
         try {
-          const userDocRef = doc(firestore, USERS_COLLECTION, firebaseUser.uid)
-          await setDoc(
-            userDocRef,
-            {
-              email: firebaseUser.email,
-              displayName: firebaseUser.displayName || '',
-              photoURL: firebaseUser.photoURL || '',
-              lastLoginAt: serverTimestamp(),
-            },
-            { merge: true }
-          )
+          await firestore
+            .collection(USERS_COLLECTION)
+            .doc(firebaseUser.uid)
+            .set(
+              {
+                email: firebaseUser.email,
+                displayName: firebaseUser.displayName || '',
+                photoURL: firebaseUser.photoURL || '',
+                lastLoginAt: serverTimestamp(),
+              },
+              { merge: true }
+            )
         } catch (error) {
           console.error('Error syncing user profile in Firestore', error)
         }
@@ -48,27 +42,28 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const login = async (email, password) => {
-    const credential = await signInWithEmailAndPassword(auth, email, password)
+    const credential = await auth.signInWithEmailAndPassword(email, password)
     return credential.user
   }
 
   const register = async ({ email, password, displayName }) => {
-    const credential = await createUserWithEmailAndPassword(auth, email, password)
+    const credential = await auth.createUserWithEmailAndPassword(email, password)
 
     if (displayName) {
-      await updateProfile(credential.user, { displayName })
+      await credential.user.updateProfile({ displayName })
     }
 
-    const userDocRef = doc(firestore, USERS_COLLECTION, credential.user.uid)
-    await setDoc(
-      userDocRef,
-      {
-        email,
-        displayName: displayName || '',
-        createdAt: serverTimestamp(),
-      },
-      { merge: true }
-    )
+    await firestore
+      .collection(USERS_COLLECTION)
+      .doc(credential.user.uid)
+      .set(
+        {
+          email,
+          displayName: displayName || '',
+          createdAt: serverTimestamp(),
+        },
+        { merge: true }
+      )
 
     return credential.user
   }
@@ -77,21 +72,26 @@ export const AuthProvider = ({ children }) => {
     if (!auth.currentUser) return null
 
     if (updates.displayName) {
-      await updateProfile(auth.currentUser, { displayName: updates.displayName })
+      await auth.currentUser.updateProfile({ displayName: updates.displayName })
     }
 
-    const userDocRef = doc(firestore, USERS_COLLECTION, auth.currentUser.uid)
-    await updateDoc(userDocRef, {
-      ...updates,
-      updatedAt: serverTimestamp(),
-    })
+    await firestore
+      .collection(USERS_COLLECTION)
+      .doc(auth.currentUser.uid)
+      .set(
+        {
+          ...updates,
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      )
 
     return auth.currentUser
   }
 
-  const logout = () => signOut(auth)
+  const logout = () => auth.signOut()
 
-  const resetPassword = (email) => sendPasswordResetEmail(auth, email)
+  const resetPassword = (email) => auth.sendPasswordResetEmail(email)
 
   const value = useMemo(
     () => ({

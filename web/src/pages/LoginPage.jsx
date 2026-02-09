@@ -7,17 +7,23 @@ export const AUTH_BRAND_HIGHLIGHTS = [
   {
     icon: '🌀',
     title: 'Captura 360°',
-    description: 'Trabaja con cámaras 360° o desde tu smartphone para recorridos inmersivos.',
+    description:
+      'Carga y sincroniza panorámicas esféricas o fotografías desde tu celular para crear tours inmersivos.',
   },
   {
     icon: '📐',
     title: 'Planos precisos',
-    description: 'Genera planos 2D y modelos 3D listos para CAD/BIM con medidas fiables.',
+    description: 'Genera planos 2D y modelos 3D listos para CAD/BIM con medidas confiables.',
   },
   {
     icon: '☁️',
     title: 'Sincronización total',
-    description: 'Gestión centralizada en la nube con acceso seguro desde web y app móvil.',
+    description: 'Gestiona todo el inventario visual desde web y app móvil con seguridad empresarial.',
+  },
+  {
+    icon: '🕶️',
+    title: 'Experiencias XR',
+    description: 'Explora tiendas y propiedades con gafas de realidad extendida sin salir de la oficina.',
   },
 ]
 
@@ -59,10 +65,22 @@ const LoginPage = () => {
         case 'auth/wrong-password':
           message = 'Contraseña incorrecta. Intenta nuevamente.'
           break
+        case 'auth/invalid-credential':
+          message = 'Credenciales inválidas. Verifica tu correo y contraseña.'
+          break
+        case 'auth/user-disabled':
+          message = 'Tu cuenta está deshabilitada. Contacta al administrador.'
+          break
         case 'auth/too-many-requests':
           message = 'Demasiados intentos. Inténtalo de nuevo más tarde.'
           break
+        case 'auth/network-request-failed':
+          message = 'No hay conexión con el servidor. Verifica tu red e inténtalo de nuevo.'
+          break
         default:
+          if (err.message) {
+            message = err.message
+          }
           break
       }
 
@@ -93,11 +111,10 @@ const LoginPage = () => {
       <div className="auth-container">
         <aside className="auth-panel auth-brand-panel">
           <div className="auth-brand">
-            <img src="/logo-d1.png" alt="Logo Su Todero D1" className="auth-logo" />
-            <h1 className="auth-title">Su Todero D1</h1>
+            <img src="/logo-d1.png" alt="Su Todero D1" className="auth-logo auth-logo-large" />
+            <h1 className="auth-title auth-title-large">Su Todero D1</h1>
             <p className="auth-tagline">
-              Escaneo 3D profesional y captura 360° sobre un lienzo oscuro elegante, sin fondos blancos
-              que distraigan la experiencia premium de la marca.
+              Escaneo 3D profesional, recorridos virtuales y planos inteligentes listos para tus proyectos.
             </p>
 
             <ul className="auth-highlight-list">
@@ -120,7 +137,7 @@ const LoginPage = () => {
           <header className="auth-form-header">
             <span className="auth-form-kicker">Acceso seguro</span>
             <h2>Inicia sesión</h2>
-            <p>Gestiona capturas, recorridos virtuales e inventarios sin salir de la oficina.</p>
+            <p>Gestiona capturas, recorridos virtuales, inventarios y modelos 3D sin salir de la oficina.</p>
           </header>
 
           <form onSubmit={handleSubmit} className="auth-form">
