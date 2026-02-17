@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
 * {
   margin: 0;
   padding: 0;
@@ -5,55 +7,63 @@
 }
 
 :root {
-  /* Colores principales - Su Todero D1 (Negro, Blanco, Dorado) */
-  --primary-color: #D4AF37;      /* Dorado elegante */
-  --secondary-color: #B8960F;    /* Dorado oscuro */
-  --success-color: #D4AF37;
-  --warning-color: #E6C84A;
-  --danger-color: #DC3545;
-  
-  /* Colores de fondo */
-  --bg-primary: #FFFFFF;         /* Blanco puro */
-  --bg-secondary: #0A0A0A;       /* Negro puro */
-  --bg-tertiary: #1A1A1A;        /* Negro suave */
-  --bg-dark: #000000;            /* Negro absoluto */
-  
-  /* Colores de texto */
-  --text-primary: #000000;       /* Negro */
-  --text-secondary: #333333;     /* Gris oscuro */
-  --text-tertiary: #666666;      /* Gris medio */
-  --text-light: #FFFFFF;         /* Blanco */
-  --text-gold: #D4AF37;          /* Dorado */
-  
-  /* Sombras */
-  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.15);
-  
-  /* Bordes */
-  --border-radius: 8px;
-  --border-radius-lg: 12px;
-  
-  /* Fuentes */
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  /* Colores principales - Su Todero D1 */
+  --primary-color: #F7C74A;
+  --secondary-color: #E39B27;
+  --primary-glow: rgba(247, 199, 74, 0.45);
+  --primary-glow-soft: rgba(247, 199, 74, 0.22);
+
+  /* Fondos */
+  --bg-primary: #000000;
+  --bg-surface: #000000;
+  --bg-elevated: #050505;
+  --bg-overlay: rgba(247, 199, 74, 0.08);
+
+  /* Texto */
+  --text-primary: #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.82);
+  --text-tertiary: rgba(255, 255, 255, 0.6);
+  --text-muted: rgba(255, 255, 255, 0.32);
+
+  /* Bordes y sombras */
+  --border-subtle: rgba(247, 199, 74, 0.32);
+  --border-contrast: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.24);
+  --shadow-soft: 0 28px 60px rgba(0, 0, 0, 0.48);
+  --shadow-gold: 0 18px 48px rgba(247, 199, 74, 0.32);
+
+  /* Bordes redondeados */
+  --border-radius: 12px;
+  --border-radius-lg: 18px;
+  --border-radius-xl: 28px;
+
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  
-  /* Tamaños */
+
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
+  font-family: 'Poppins', sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: none;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'Source Code Pro', Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 /* Scrollbar personalizado */
@@ -63,16 +73,16 @@ code {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-secondary);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--text-tertiary);
+  background: rgba(255, 255, 255, 0.24);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-secondary);
+  background: rgba(255, 255, 255, 0.4);
 }
 
 /* Utilidades */
@@ -83,56 +93,60 @@ code {
 }
 
 .btn {
-  padding: 10px 20px;
+  padding: 12px 22px;
   border: none;
   border-radius: var(--border-radius);
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  transition: all 0.3s;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: var(--bg-dark);
-  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+  color: #0A0A0A;
+  box-shadow: var(--shadow-gold);
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+  filter: brightness(1.05);
 }
 
 .btn-secondary {
   background-color: transparent;
-  color: var(--text-light);
+  color: var(--text-primary);
   border: 2px solid var(--primary-color);
 }
 
 .btn-secondary:hover {
-  background-color: var(--primary-color);
-  color: var(--bg-dark);
+  background: var(--primary-glow-soft);
+  transform: translateY(-2px);
 }
 
 .card {
-  background: var(--bg-primary);
+  background: linear-gradient(145deg, rgba(21, 21, 21, 0.92), rgba(9, 9, 9, 0.94));
   border-radius: var(--border-radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-sm);
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: var(--shadow-soft);
 }
 
 .card:hover {
-  box-shadow: var(--shadow-md);
-  transition: box-shadow 0.2s;
+  border-color: var(--border-subtle);
 }
 
 /* Animaciones */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(18px);
   }
   to {
     opacity: 1;
@@ -141,7 +155,7 @@ code {
 }
 
 .fade-in {
-  animation: fadeIn 0.3s ease-in;
+  animation: fadeIn 0.4s ease-out;
 }
 
 @keyframes spin {
@@ -157,9 +171,9 @@ code {
 /* Responsive */
 @media (max-width: 768px) {
   :root {
-    font-size: 14px;
+    font-size: 15px;
   }
-  
+
   .container {
     padding: 0 16px;
   }

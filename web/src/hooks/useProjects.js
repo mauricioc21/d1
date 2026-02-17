@@ -1,69 +1,39 @@
 /**
- * useProjects - Hook to retrieve projects from Firestore
+ * useProjects - Hook to retrieve projects from Firestore (shared data layer)
  */
 
 import { useEffect, useState } from 'react'
-import { collection, getDocs, orderBy, query, where } from 'firebase/firestore'
 
-import { firestore } from '../services/firebase'
-import { firestoreCollections } from '@shared/config/firebase.config'
-
-const PROJECTS_COLLECTION = firestoreCollections.projects || 'projects'
-
-const mapProjectDocument = (doc) => {
-  const data = doc.data()
-
-  return {
-    id: doc.id,
-    name: data?.name ?? 'Proyecto sin nombre',
-    date: data?.date?.toDate ? data.date.toDate() : data?.date ?? null,
-    images: data?.images ?? 0,
-    scans: data?.scans ?? 0,
-    status: data?.status ?? 'active',
-    storage: data?.storageLocation ?? 'firebase',
-    captureType: data?.captureType ?? 'photo',
-    userId: data?.userId ?? null,
-    raw: data,
-  }
-}
+import { listProjectsByUser, listenProjectsByUser } from '../services/data'
 
 export const useProjects = (options = {}) => {
-  const { userId = null, enabled = true } = options
+  const { userId = null, enabled = true, limit = 50 } = options
   const [projects, setProjects] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
   useEffect(() => {
     let isMounted = true
+    let unsubscribe = null
 
-    const fetchProjects = async () => {
-      if (!enabled) {
-        setProjects([])
-        setLoading(false)
-        return
-      }
+    if (!enabled || !userId) {
+      setProjects([])
+      setLoading(false)
+      setError(null)
+      return () => {}
+    }
 
-      if (!userId) {
-        setProjects([])
-        setLoading(false)
-        return
-      }
-
+    const loadProjects = async () => {
       setLoading(true)
       setError(null)
 
       try {
-        const projectsRef = collection(firestore, PROJECTS_COLLECTION)
-        const constraints = [where('userId', '==', userId), orderBy('date', 'desc')]
-        const projectsQuery = query(projectsRef, ...constraints)
-        const snapshot = await getDocs(projectsQuery)
-        const fetchedProjects = snapshot.docs.map(mapProjectDocument)
-
+        const items = await listProjectsByUser(userId, { limit })
         if (isMounted) {
-          setProjects(fetchedProjects)
+          setProjects(items)
         }
       } catch (err) {
-        console.error('Error fetching projects from Firestore', err)
+        console.error('Error fetching projects', err)
         if (isMounted) {
           setError(err)
         }
@@ -74,12 +44,40 @@ export const useProjects = (options = {}) => {
       }
     }
 
-    fetchProjects()
+    loadProjects()
+
+    try {
+      unsubscribe = listenProjectsByUser(
+        userId,
+        (items) => {
+          if (isMounted) {
+            setProjects(items)
+          }
+        },
+        {
+          limit,
+          onError: (err) => {
+            console.error('Error listening to projects', err)
+            if (isMounted) {
+              setError(err)
+            }
+          },
+        }
+      )
+    } catch (err) {
+      console.error('Error subscribing to projects listener', err)
+      if (isMounted) {
+        setError(err)
+      }
+    }
 
     return () => {
       isMounted = false
+      if (typeof unsubscribe === 'function') {
+        unsubscribe()
+      }
     }
-  }, [userId, enabled])
+  }, [userId, enabled, limit])
 
   return { projects, loading, error }
 }

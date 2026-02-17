@@ -47,7 +47,17 @@ const RegisterPage = () => {
         case 'auth/weak-password':
           message = 'La contraseña es muy débil. Intenta con otra.'
           break
+        case 'auth/operation-not-allowed':
+          message =
+            'El registro por correo no está habilitado. Activa Email/Contraseña en Firebase Authentication.'
+          break
+        case 'auth/network-request-failed':
+          message = 'No hay conexión con el servidor. Verifica tu red e inténtalo de nuevo.'
+          break
         default:
+          if (err.message) {
+            message = err.message
+          }
           break
       }
 

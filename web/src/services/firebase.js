@@ -1,29 +1,22 @@
 /**
- * Firebase initialization for Su Todero D1 web app
+ * Firebase initialization for Su Todero D1 web app (compat API for shared data layer)
  */
 
-import { initializeApp, getApps } from 'firebase/app'
-import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
+import firebase from 'firebase/compat/app'
+import 'firebase/compat/auth'
+import 'firebase/compat/firestore'
+import 'firebase/compat/storage'
 
 import { firebaseConfig } from '@shared/config/firebase.config'
 
-let firebaseAppInstance = null
-
-const getFirebaseApp = () => {
-  if (!firebaseAppInstance) {
-    firebaseAppInstance = getApps().length
-      ? getApps()[0]
-      : initializeApp(firebaseConfig)
-  }
-
-  return firebaseAppInstance
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig)
 }
 
-export const firebaseApp = getFirebaseApp()
-export const auth = getAuth(firebaseApp)
-export const firestore = getFirestore(firebaseApp)
-export const storage = getStorage(firebaseApp)
+export const firebaseApp = firebase.app()
+export const auth = firebaseApp.auth()
+export const firestore = firebaseApp.firestore()
+export const storage = firebaseApp.storage()
+export const FieldValue = firebase.firestore.FieldValue
 
 export default firebaseApp

@@ -10,6 +10,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Dimensions,
+  Image,
 } from 'react-native';
 import colors from '../theme/colors';
 
@@ -54,15 +55,22 @@ const HomeScreen = ({ navigation }) => {
   ];
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Su Todero D1</Text>
-        <Text style={styles.subtitle}>¡Bienvenido! 👋</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <View style={styles.hero}>
+        <Image
+          source={require('../../assets/images/logo-d1.png')}
+          style={styles.heroLogo}
+          resizeMode="contain"
+        />
+        <Text style={styles.heroTitle}>Su Todero D1</Text>
+        <Text style={styles.heroSubtitle}>
+          Escaneo 3D profesional, recorridos virtuales y planos inteligentes en un entorno premium.
+        </Text>
       </View>
 
       {/* Acciones Rápidas */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
+        <Text style={styles.sectionTitle}>Acciones rápidas</Text>
         <View style={styles.actionsGrid}>
           {quickActions.map((action) => (
             <TouchableOpacity
@@ -79,7 +87,7 @@ const HomeScreen = ({ navigation }) => {
 
       {/* Proyectos Recientes */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Proyectos Recientes</Text>
+        <Text style={styles.sectionTitle}>Proyectos recientes</Text>
         {recentProjects.map((project) => (
           <TouchableOpacity
             key={project.id}
@@ -121,7 +129,7 @@ const HomeScreen = ({ navigation }) => {
       </View>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Versión 1.0.0</Text>
+        <Text style={styles.footerText}>Su Todero D1 • Versión 1.0.0</Text>
       </View>
     </ScrollView>
   );
@@ -130,32 +138,52 @@ const HomeScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.whiteSoft,
-  },
-  header: {
-    padding: 20,
     backgroundColor: colors.black,
-    marginBottom: 16,
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
+  content: {
+    paddingBottom: 32,
+  },
+  hero: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 36,
+    paddingHorizontal: 24,
+    backgroundColor: colors.black,
+  },
+  heroLogo: {
+    width: width * 0.6,
+    height: width * 0.6,
+    marginBottom: -8,
+  },
+  heroTitle: {
+    fontSize: 32,
+    fontWeight: '900',
     color: colors.primary,
+    textTransform: 'uppercase',
+    letterSpacing: 1.5,
+    textShadowColor: 'rgba(247, 199, 74, 0.45)',
+    textShadowOffset: { width: 0, height: 6 },
+    textShadowRadius: 14,
+    marginTop: 12,
   },
-  subtitle: {
+  heroSubtitle: {
+    marginTop: 12,
     fontSize: 16,
-    color: colors.whiteSoft,
-    marginTop: 4,
+    lineHeight: 22,
+    color: 'rgba(255,255,255,0.78)',
+    textAlign: 'center',
+    maxWidth: 340,
   },
   section: {
-    marginBottom: 24,
-    paddingHorizontal: 16,
+    marginBottom: 28,
+    paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: '600',
-    color: colors.textDark,
-    marginBottom: 12,
+    fontWeight: '700',
+    color: colors.textLight,
+    marginBottom: 16,
+    letterSpacing: 0.6,
   },
   actionsGrid: {
     flexDirection: 'row',
@@ -163,77 +191,81 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   actionCard: {
-    width: (width - 48) / 2,
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
+    width: (width - 56) / 2,
+    backgroundColor: colors.blackSoft,
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 16,
     alignItems: 'center',
-    shadowColor: colors.primary,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
     borderWidth: 1,
     borderColor: colors.borderGold,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.45,
+    shadowRadius: 24,
+    elevation: 6,
   },
   actionIcon: {
-    fontSize: 40,
-    marginBottom: 8,
+    fontSize: 44,
+    marginBottom: 10,
   },
   actionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000000',
-    marginBottom: 4,
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.textLight,
+    marginBottom: 6,
     textAlign: 'center',
+    letterSpacing: 0.4,
   },
   actionDescription: {
-    fontSize: 12,
-    color: '#8E8E93',
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.64)',
     textAlign: 'center',
+    lineHeight: 18,
   },
   projectCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
+    backgroundColor: colors.blackSoft,
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: colors.borderGold,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.35,
+    shadowRadius: 18,
+    elevation: 5,
   },
   projectIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
+    width: 52,
+    height: 52,
+    borderRadius: 14,
     backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 14,
   },
   projectIconText: {
-    fontSize: 24,
+    fontSize: 26,
   },
   projectInfo: {
     flex: 1,
   },
   projectName: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000000',
-    marginBottom: 4,
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.textLight,
+    marginBottom: 6,
   },
   projectDate: {
-    fontSize: 14,
-    color: '#8E8E93',
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.62)',
   },
   projectArrow: {
-    fontSize: 24,
-    color: '#C7C7CC',
+    fontSize: 26,
+    color: colors.primary,
   },
   statsContainer: {
     flexDirection: 'row',
@@ -241,34 +273,39 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 4,
+    backgroundColor: colors.blackSoft,
+    borderRadius: 18,
+    paddingVertical: 18,
+    paddingHorizontal: 12,
+    marginHorizontal: 6,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.borderGold,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.35,
+    shadowRadius: 20,
+    elevation: 5,
   },
   statValue: {
-    fontSize: 28,
-    fontWeight: 'bold',
+    fontSize: 30,
+    fontWeight: '800',
     color: colors.primary,
-    marginBottom: 4,
+    marginBottom: 6,
   },
   statLabel: {
-    fontSize: 14,
-    color: '#8E8E93',
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.58)',
+    letterSpacing: 0.3,
   },
   footer: {
-    padding: 20,
+    padding: 28,
     alignItems: 'center',
   },
   footerText: {
     fontSize: 12,
-    color: '#C7C7CC',
+    color: 'rgba(255,255,255,0.45)',
+    letterSpacing: 0.8,
   },
 });
 

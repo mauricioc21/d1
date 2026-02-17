@@ -39,9 +39,12 @@ const HomePage = () => {
     <div className="home-page">
       {/* Hero Section */}
       <section className="hero">
-        <div className="container">
-          <h1>Su Todero D1</h1>
-          <p>Escaneo 3D profesional y captura 360° al alcance de todos</p>
+        <div className="container hero-content">
+          <img src="/logo-d1.png" alt="Su Todero D1" className="hero-logo" />
+          <h1 className="hero-title hero-title-large">Su Todero D1</h1>
+          <p className="hero-subheadline">
+            Escaneo 3D profesional, captura 360° y generación de planos con precisión milimétrica, sin salir de la oficina.
+          </p>
           <div className="hero-buttons">
             <Link to="/upload" className="btn btn-primary">Comenzar Ahora</Link>
             <Link to="/projects" className="btn btn-secondary">Ver Proyectos</Link>

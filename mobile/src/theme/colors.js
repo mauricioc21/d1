@@ -5,30 +5,30 @@
 
 export const colors = {
   // Colores principales
-  primary: '#D4AF37',      // Dorado elegante
-  secondary: '#B8960F',    // Dorado oscuro
+  primary: '#F7C74A',      // Dorado brillante
+  secondary: '#E39B27',    // Dorado profundo
   
   // Fondos
   black: '#000000',        // Negro puro
-  blackSoft: '#0A0A0A',    // Negro suave
-  blackLight: '#1A1A1A',   // Negro claro
+  blackSoft: '#050505',    // Negro suave
+  blackLight: '#0C0C0C',   // Negro claro
   white: '#FFFFFF',        // Blanco puro
-  whiteSoft: '#F5F5F5',    // Blanco suave
+  whiteSoft: '#EDEDED',    // Blanco suave (solo para contrastes puntuales)
   
   // Texto
   textDark: '#000000',
-  textGray: '#333333',
+  textGray: '#B0B0B0',
   textLight: '#FFFFFF',
-  textGold: '#D4AF37',
+  textGold: '#F7C74A',
   
   // Estados
-  success: '#D4AF37',
-  warning: '#E6C84A',
+  success: '#F7C74A',
+  warning: '#E8C45A',
   danger: '#DC3545',
   
   // Sombras y borders
-  shadowGold: 'rgba(212, 175, 55, 0.3)',
-  borderGold: 'rgba(212, 175, 55, 0.2)',
+  shadowGold: 'rgba(247, 199, 74, 0.32)',
+  borderGold: 'rgba(247, 199, 74, 0.26)',
 };
 
 export default colors;
